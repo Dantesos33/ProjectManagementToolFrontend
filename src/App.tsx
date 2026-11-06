@@ -1,5 +1,3 @@
-import Counter from "./components/Counter.tsx";
-
 
 function App() {
 
@@ -7,7 +5,6 @@ function App() {
     <>
       <div className="bg-black text-white h-screen flex flex-col justify-center items-center">
         <h1 className="text-4xl font-bold mb-4">Project Management Tool</h1>
-        <Counter />
       </div>
     </>
   )
