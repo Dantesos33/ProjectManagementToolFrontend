@@ -5,6 +5,7 @@ import { useAppDispatch } from '../../hooks/index';
 import { parseApiError, type ParsedError } from '../../lib/errors';
 import { useLoginMutation, type LoginBody } from '../../store/auth/authApi';
 import { setCredentials } from '../../store/auth/authSlice';
+import AuthLayout from '../../components/AuthLayout';
 
 const LAST_DOMAIN_KEY = 'last_workspace';
 
@@ -41,31 +42,39 @@ export default function LoginPage() {
   const banner = error && (error.fields.email ?? (Object.keys(error.fields).length ? '' : error.message));
 
   return (
-    <div className="grid min-h-screen place-items-center bg-gray-50 px-4">
-      <form onSubmit={onSubmit} className="w-full max-w-sm space-y-4 rounded-xl bg-white p-6 shadow">
-        <h1 className="text-xl font-semibold">Sign in to {import.meta.env.VITE_APP_NAME}</h1>
+  <AuthLayout
+    title="Welcome back"
+    subtitle="Sign in to your DeesOps workspace."
+    footer={
+      <>
+        New company?{' '}
+        <Link to="/register" className="font-medium text-indigo-600 hover:underline dark:text-indigo-400">
+          Create a workspace
+        </Link>
+      </>
+    }
+  >
+    <form onSubmit={onSubmit} className="space-y-4">
+      {banner && (
+        <div role="alert"
+             className="rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300">
+          {banner}
+        </div>
+      )}
 
-        {banner && (
-          <div className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{banner}</div>
-        )}
+      <Field label="Workspace" name="domain" value={form.domain} onChange={onChange}
+             placeholder="acme" required autoFocus error={error?.fields.domain} />
+      <Field label="Email" name="email" type="email" value={form.email} onChange={onChange}
+             autoComplete="username" required />
+      <Field label="Password" name="password" type="password" value={form.password}
+             onChange={onChange} autoComplete="current-password" required
+             error={error?.fields.password} />
 
-        <Field label="Workspace" name="domain" value={form.domain} onChange={onChange}
-               placeholder="acme" required autoFocus error={error?.fields.domain} />
-        <Field label="Email" name="email" type="email" value={form.email} onChange={onChange}
-               autoComplete="username" required />
-        <Field label="Password" name="password" type="password" value={form.password}
-               onChange={onChange} autoComplete="current-password" required
-               error={error?.fields.password} />
-
-        <button type="submit" disabled={isLoading}
-                className="w-full rounded-md bg-blue-600 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-60">
-          {isLoading ? 'Signing in…' : 'Sign in'}
-        </button>
-
-        <p className="text-center text-sm text-gray-600">
-          New company? <Link to="/register" className="text-blue-600 hover:underline">Create a workspace</Link>
-        </p>
-      </form>
-    </div>
-  );
+      <button type="submit" disabled={isLoading}
+              className="w-full rounded-xl bg-indigo-600 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition hover:bg-indigo-500 focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/30 disabled:cursor-not-allowed disabled:opacity-60">
+        {isLoading ? 'Signing in…' : 'Sign in'}
+      </button>
+    </form>
+  </AuthLayout>
+);
 }
