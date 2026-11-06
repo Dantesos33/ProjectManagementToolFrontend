@@ -1,13 +1,18 @@
+import { Route, Routes } from 'react-router-dom';
+import { GuestRoute, ProtectedRoute, LoginPage, RegisterPage } from './pages/auth/index';
+import Dashboard from './pages/Dashboard';
 
-function App() {
-
+export default function App() {
   return (
-    <>
-      <div className="bg-black text-white h-screen flex flex-col justify-center items-center">
-        <h1 className="text-4xl font-bold mb-4">Project Management Tool</h1>
-      </div>
-    </>
-  )
-}
+    <Routes>
+      <Route element={<GuestRoute />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Route>
 
-export default App
+      <Route element={<ProtectedRoute />}>
+        <Route path="/" element={<Dashboard />} />
+      </Route>
+    </Routes>
+  );
+}
