@@ -12,6 +12,7 @@ export function useCan() {
     createProject: atLeast(role, 'manager'),
     editProject: atLeast(role, 'manager'),
     deleteProject: atLeast(role, 'manager'),
+    createTask: atLeast(role, 'manager'),
     editTask: atLeast(role, 'manager'),
     deleteTask: atLeast(role, 'manager'),
     manageUsers: atLeast(role, 'admin'),

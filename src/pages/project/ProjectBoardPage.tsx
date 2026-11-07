@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import Placeholder from '../../pages/Placeholder';
+import KanbanBoard from '../tasks/KanbanBoard';
 import { useGetProjectQuery } from '../../store/projects/projectsApi';
 
 export default function ProjectBoardPage() {
@@ -31,9 +32,7 @@ export default function ProjectBoardPage() {
         )}
       </div>
 
-      <div className="grid place-items-center rounded-2xl border border-dashed border-slate-300 bg-white/50 px-6 py-20 text-center text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-900/40 dark:text-slate-400">
-        The Kanban board will appear here in the next step.
-      </div>
+      <KanbanBoard projectId={projectId} />
     </div>
   );
 }
