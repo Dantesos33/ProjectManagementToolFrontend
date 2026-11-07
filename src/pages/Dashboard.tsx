@@ -1,7 +1,13 @@
-import { useAppSelector } from '../hooks/index';
-import { useCan } from '../hooks/useCan';
+import { useAppSelector, useAppCan } from '../hooks/index';
+import { useGetDashboardStatsQuery } from '../store/dashboard/dashboardApi';
+import type { DashboardStats } from '../types';
 
-const STATS = ['Projects', 'Open tasks', 'Completed', 'Overdue'];
+const STATS: { label: string; key: keyof DashboardStats }[] = [
+  { label: 'Projects', key: 'projects' },
+  { label: 'Open tasks', key: 'open_tasks' },
+  { label: 'Completed', key: 'completed_tasks' },
+  { label: 'Overdue', key: 'overdue_tasks' },
+];
 
 function greeting(): string {
   const h = new Date().getHours();
@@ -10,7 +16,8 @@ function greeting(): string {
 
 export default function Dashboard() {
   const user = useAppSelector((s) => s.auth.user);
-  const can = useCan();
+  const can = useAppCan();
+  const { data: stats, isLoading: statsLoading } = useGetDashboardStatsQuery();
 
   const access: [string, boolean][] = [
     ['View projects and tasks', can.viewProjects],
@@ -33,17 +40,24 @@ export default function Dashboard() {
       </div>
 
       <section aria-label="Statistics" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {STATS.map((label) => (
-          <div key={label}
+        {STATS.map(({ label, key }) => (
+          <div key={key}
                className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <p className="text-sm text-slate-500 dark:text-slate-400">{label}</p>
-            <p className="mt-2 text-3xl font-semibold text-slate-900 dark:text-white">—</p>
+            {statsLoading ? (
+              <div className="mt-3 h-8 w-12 animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
+            ) : (
+              <p className={`mt-2 text-3xl font-semibold ${
+                key === 'overdue_tasks' && (stats?.[key] ?? 0) > 0
+                  ? 'text-red-600 dark:text-red-400'
+                  : 'text-slate-900 dark:text-white'
+              }`}>
+                {stats?.[key] ?? '—'}
+              </p>
+            )}
           </div>
         ))}
       </section>
-      <p className="-mt-4 text-xs text-slate-400 dark:text-slate-500">
-        Numbers appear once the Projects and Tasks API is connected.
-      </p>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <h2 className="text-base font-semibold text-slate-900 dark:text-white">Your access</h2>
