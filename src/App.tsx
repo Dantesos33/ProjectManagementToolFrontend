@@ -1,8 +1,8 @@
-// src/App.tsx
 import { Route, Routes } from 'react-router-dom';
 import AppLayout from './components/layout/AppLayout';
 import { GuestRoute, LoginPage, RegisterPage, ProtectedRoute, RoleRoute } from './pages/auth/index';
 import { useAppTheme } from './hooks/index';
+import AuthBootstrap from './store/auth/AuthBootstrap';
 import Dashboard from './pages/Dashboard';
 import Placeholder from './pages/Placeholder';
 
@@ -10,6 +10,7 @@ export default function App() {
   useAppTheme();
 
   return (
+     <AuthBootstrap>
     <Routes>
       <Route element={<GuestRoute />}>
         <Route path="/login" element={<LoginPage />} />
@@ -36,5 +37,6 @@ export default function App() {
         </Route>
       </Route>
     </Routes>
+    </AuthBootstrap>
   );
 }

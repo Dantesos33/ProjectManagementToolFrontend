@@ -10,5 +10,6 @@ export interface User {
 
 export interface AuthPayload {
   token: string;
+  expires_in: number;
   user: User;
 }
