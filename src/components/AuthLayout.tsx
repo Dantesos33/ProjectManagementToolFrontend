@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import ThemeToggle from './ThemeToggle';
+import { LogoMark } from './Logo';
 
 interface AuthLayoutProps {
   title: string;
@@ -22,9 +23,7 @@ export default function AuthLayout({ title, subtitle, children, footer }: AuthLa
       <main className="relative grid min-h-screen place-items-center px-4 py-12">
         <div className="w-full max-w-md">
           <div className="mb-8 flex flex-col items-center text-center">
-            <div className="mb-4 grid h-12 w-12 place-items-center rounded-2xl bg-indigo-600 text-xl font-bold text-white shadow-lg shadow-indigo-500/30">
-              D
-            </div>
+            <LogoMark className="mb-4 h-12 w-12 drop-shadow-lg" />
             <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">
               {title}
             </h1>

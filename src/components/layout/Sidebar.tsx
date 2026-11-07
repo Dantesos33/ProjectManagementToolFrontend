@@ -5,6 +5,7 @@ import { atLeast } from '../../lib/permissions';
 import { closeSidebar } from '../../store/theme/uiSlice';
 import { Icon } from './Icons';
 import { NAV_ITEMS } from './NavItems';
+import Logo from '../Logo';
 
 export default function Sidebar() {
   const dispatch = useAppDispatch();
@@ -39,12 +40,7 @@ export default function Sidebar() {
       >
         <div className="flex h-16 items-center justify-between px-5">
           <div className="flex items-center gap-3">
-            <div className="grid h-9 w-9 place-items-center rounded-xl bg-indigo-600 font-bold text-white shadow-lg shadow-indigo-500/30">
-              D
-            </div>
-            <span className="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">
-              DeesOps
-            </span>
+            <Logo />
           </div>
           <button
             type="button"
