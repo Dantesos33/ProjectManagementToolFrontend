@@ -7,6 +7,7 @@ import {
   ProtectedRoute,
   RoleRoute,
 } from "./pages/auth/index";
+import AuditLogPage from './pages/audit/AuditLogPage';
 import { ProjectBoardPage, ProjectsPage } from "./pages/project/index";
 import { useAppTheme } from "./hooks/index";
 import AuthBootstrap from "./store/auth/AuthBootstrap";
@@ -40,15 +41,7 @@ export default function App() {
                   />
                 }
               />
-              <Route
-                path="/admin/audit"
-                element={
-                  <Placeholder
-                    title="Audit log"
-                    description="Workspace activity will appear here."
-                  />
-                }
-              />
+              <Route path="/admin/audit" element={<AuditLogPage />} />
             </Route>
 
             <Route

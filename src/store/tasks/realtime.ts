@@ -33,11 +33,12 @@ export function applyTaskEvent(dispatch: AppDispatch, e: TaskChangedPayload): vo
   );
 
   // Dashboard numbers changed; project cards show task counts
+
   dispatch(
-    baseApi.util.invalidateTags(
-      e.action === 'created' || e.action === 'deleted'
-        ? ['Stats', { type: 'Project', id: 'LIST' }]
-        : ['Stats'],
-    ),
-  );
+  baseApi.util.invalidateTags(
+    e.action === 'created' || e.action === 'deleted'
+      ? ['Stats', { type: 'Project', id: 'LIST' }]
+      : ['Stats'],
+  ),
+);
 }

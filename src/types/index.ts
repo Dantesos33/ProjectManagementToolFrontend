@@ -73,3 +73,16 @@ export interface Member {
   name: string;
   role: Role;
 }
+
+export interface AuditLog {
+  id: number;
+  action: string;                       // e.g. "task.updated"
+  entity: string;                       // "task" | "project"
+  entity_id: number | null;
+  description: string;
+  old_values: Record<string, unknown> | null;
+  new_values: Record<string, unknown> | null;
+  ip_address: string | null;
+  user: { id: number; name: string } | null;   // null if the user was deleted
+  created_at: string;
+}
