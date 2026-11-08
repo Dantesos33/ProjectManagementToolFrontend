@@ -10,6 +10,7 @@ interface AuthLayoutProps {
 }
 
 export default function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProps) {
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-50 transition-colors dark:bg-slate-950">
       {/* decorative background blobs */}

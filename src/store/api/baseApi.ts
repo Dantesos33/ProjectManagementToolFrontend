@@ -3,16 +3,21 @@ import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolk
 import { logout, setCredentials } from '../../store/auth/authSlice';
 import type { RootState } from '../../store/store';
 import type { AuthPayload } from '../../types/index';
+import { getSocketId } from '../../lib/echo';
 
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL,
   credentials: 'include',   // REQUIRED so the refresh cookie is stored and sent
   prepareHeaders: (headers, { getState }) => {
-    const token = (getState() as RootState).auth.token;
-    if (token) headers.set('Authorization', `Bearer ${token}`);
-    headers.set('Accept', 'application/json');
-    return headers;
-  },
+  const token = (getState() as RootState).auth.token;
+  if (token) headers.set('Authorization', `Bearer ${token}`);
+  headers.set('Accept', 'application/json');
+
+  const socketId = getSocketId();
+  if (socketId) headers.set('X-Socket-ID', socketId);   // lets Laravel skip the sender
+
+  return headers;
+},
 });
 
 type Api = Parameters<typeof rawBaseQuery>[1];

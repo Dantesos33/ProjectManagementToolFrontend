@@ -13,6 +13,8 @@
     "@hello-pangea/dnd": "^18.0.1",
     "@reduxjs/toolkit": "^2.13.0",
     "@tailwindcss/vite": "^4.3.3",
+    "laravel-echo": "^2.6.3",
+    "pusher-js": "^8.6.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-redux": "^9.3.1",

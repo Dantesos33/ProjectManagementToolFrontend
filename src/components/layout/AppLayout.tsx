@@ -4,8 +4,11 @@ import { useAppDispatch } from '../../hooks/index';
 import { closeSidebar } from '../../store/theme/uiSlice';
 import Header from './Header';
 import Sidebar from './Sidebar';
+import ConnectionBanner from '../ConnectionBanner';
+import { useAppRealtime } from '../../hooks/index';
 
 export default function AppLayout() {
+  useAppRealtime();
   const dispatch = useAppDispatch();
   const { pathname } = useLocation();
 
@@ -17,6 +20,7 @@ export default function AppLayout() {
       <Sidebar />
       <div className="lg:pl-64">
         <Header />
+        <ConnectionBanner />
         <main className="mx-auto max-w-6xl p-4 sm:p-6 lg:p-8">
           <Outlet />
         </main>

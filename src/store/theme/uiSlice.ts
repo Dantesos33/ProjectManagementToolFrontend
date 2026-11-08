@@ -11,12 +11,16 @@ function getInitialTheme(): Theme {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
+export type RealtimeStatus = 'idle' | 'connecting' | 'connected' | 'reconnecting' | 'error';
+
 interface UiState {
   theme: Theme;
-  sidebarOpen: boolean;   // only matters on mobile; desktop sidebar is always visible
+  sidebarOpen: boolean;
+  realtime: RealtimeStatus;
 }
 
-const initialState: UiState = { theme: getInitialTheme(), sidebarOpen: false };
+
+const initialState: UiState = { theme: getInitialTheme(), sidebarOpen: false, realtime: 'idle' };
 
 const uiSlice = createSlice({
   name: 'ui',
@@ -26,8 +30,9 @@ const uiSlice = createSlice({
     toggleTheme(state) { state.theme = state.theme === 'dark' ? 'light' : 'dark'; },
     openSidebar(state) { state.sidebarOpen = true; },
     closeSidebar(state) { state.sidebarOpen = false; },
+    setRealtimeStatus(state, { payload }: PayloadAction<RealtimeStatus>) { state.realtime = payload; },
   },
 });
 
-export const { setTheme, toggleTheme, openSidebar, closeSidebar } = uiSlice.actions;
+export const { setTheme, toggleTheme, openSidebar, closeSidebar, setRealtimeStatus } = uiSlice.actions;
 export default uiSlice.reducer;
