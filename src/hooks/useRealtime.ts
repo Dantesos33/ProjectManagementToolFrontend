@@ -1,13 +1,17 @@
-import { useEffect } from 'react';
-import { useStore } from 'react-redux';
-import { applyTaskEvent, type TaskChangedPayload } from '../store/tasks/realtime';
-import { connectEcho, disconnectEcho } from '../lib/echo';
-import { baseApi } from '../store/api/baseApi';
-import type { RootState } from '../store/store';
-import { authApi } from '../store/auth/authApi';
-import { setCredentials } from '../store/auth/authSlice';
-import { setRealtimeStatus } from '../store/theme/uiSlice';
-import { useAppDispatch, useAppSelector } from './index';
+import { useEffect } from "react";
+import { useStore } from "react-redux";
+import {
+  applyTaskEvent,
+  type TaskChangedPayload,
+} from "../store/tasks/realtime";
+import { connectEcho, disconnectEcho } from "../lib/echo";
+import { baseApi } from "../store/api/baseApi";
+import type { RootState } from "../store/store";
+import { authApi } from "../store/auth/authApi";
+import { setCredentials } from "../store/auth/authSlice";
+import { setRealtimeStatus } from "../store/theme/uiSlice";
+import { useAppDispatch, useAppSelector } from "./index";
+import { dragStarted, dragEnded } from "../store/theme/uiSlice";
 
 export function useRealtime() {
   const dispatch = useAppDispatch();
@@ -24,7 +28,9 @@ export function useRealtime() {
       getToken: () => store.getState().auth.token,
       refreshToken: async () => {
         try {
-          const payload = await dispatch(authApi.endpoints.refresh.initiate()).unwrap();
+          const payload = await dispatch(
+            authApi.endpoints.refresh.initiate(),
+          ).unwrap();
           dispatch(setCredentials(payload));
           return payload.token;
         } catch {
@@ -38,29 +44,46 @@ export function useRealtime() {
     let wasConnected = false;
 
     const onStateChange = ({ current }: { current: string }) => {
-      if (current === 'connected') {
-        dispatch(setRealtimeStatus('connected'));
+      if (current === "connected") {
+        dispatch(setRealtimeStatus("connected"));
         // Events may have been missed while offline: refetch everything on screen
-        if (wasConnected) dispatch(baseApi.util.invalidateTags(['Task', 'Project', 'Stats']));
+        if (wasConnected)
+          dispatch(baseApi.util.invalidateTags(["Task", "Project", "Stats"]));
         wasConnected = true;
-      } else if (current === 'connecting' && !wasConnected) {
-        dispatch(setRealtimeStatus('connecting'));
+      } else if (current === "connecting" && !wasConnected) {
+        dispatch(setRealtimeStatus("connecting"));
       } else {
-        dispatch(setRealtimeStatus('reconnecting'));
+        dispatch(setRealtimeStatus("reconnecting"));
       }
     };
-    connection.bind('state_change', onStateChange);
+    connection.bind("state_change", onStateChange);
 
     echo
       .private(channelName)
-      .listen('.task.changed', (e: TaskChangedPayload) => applyTaskEvent(dispatch, e))
-      .error(() => dispatch(setRealtimeStatus('error')));
+      .listen(".task.changed", (e: TaskChangedPayload) =>
+        applyTaskEvent(dispatch, e),
+      )
+      .error(() => dispatch(setRealtimeStatus("error")));
+
+    const channel = echo.private(channelName);
+    channel
+      .listenForWhisper(
+        "task.dragging",
+        (e: { taskId: number; name: string }) => {
+          dispatch(dragStarted(e));
+          // Safety net: if the "dropped" whisper is lost (tab closed mid-drag), clear it
+          setTimeout(() => dispatch(dragEnded(e.taskId)), 15000);
+        },
+      )
+      .listenForWhisper("task.dropped", (e: { taskId: number }) => {
+        dispatch(dragEnded(e.taskId));
+      });
 
     return () => {
-      connection.unbind('state_change', onStateChange);
+      connection.unbind("state_change", onStateChange);
       echo.leave(channelName);
       disconnectEcho();
-      dispatch(setRealtimeStatus('idle'));
+      dispatch(setRealtimeStatus("idle"));
     };
   }, [authed, tenantId, dispatch, store]);
 }

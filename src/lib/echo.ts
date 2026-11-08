@@ -70,4 +70,6 @@ export function disconnectEcho(): void {
   instance = null;
 }
 
+export const getEcho = (): Echo<'reverb'> | null => instance;
+
 export const getSocketId = (): string | undefined => instance?.socketId();
