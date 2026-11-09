@@ -38,6 +38,8 @@ export default function TaskCard({
     (p) => p.value === task.priority,
   )?.label;
   const remote = useAppSelector((s) => s.ui.dragging[task.id]);
+  const me = useAppSelector((s) => s.auth.user?.id);
+  const mine = task.assigned_to === me;
 
   return (
     <Draggable
@@ -50,7 +52,7 @@ export default function TaskCard({
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className={`rounded-xl border bg-white p-3.5 shadow-sm transition-shadow dark:bg-slate-900 ${remote ? "opacity-60 ring-2 ring-amber-400/60" : ""} ${
+          className={`rounded-xl border bg-white p-3.5 shadow-sm transition-shadow dark:bg-slate-900 ${mine ? 'border-l-4 border-l-indigo-500' : ''} ${remote ? "opacity-60 ring-2 ring-amber-400/60" : ""} ${
             snapshot.isDragging
               ? "border-indigo-400 shadow-xl ring-2 ring-indigo-500/20 dark:border-indigo-500"
               : "border-slate-200 hover:shadow-md dark:border-slate-800"

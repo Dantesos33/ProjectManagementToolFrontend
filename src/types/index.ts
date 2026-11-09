@@ -112,3 +112,17 @@ export interface InvitationPreview {
   company: string;
   expires_at: string;
 }
+
+export interface AppNotification {
+  id: string;
+  data: {
+    type: string;
+    task_id: number;
+    project_id: number;
+    title: string;
+    assigned_by: string;
+    message: string;
+  };
+  read_at: string | null;
+  created_at: string;
+}

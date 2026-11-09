@@ -22,11 +22,12 @@ export function useRealtime() {
   const authed = useAppSelector((s) => !!s.auth.token);
   const tenantId = useAppSelector((s) => s.auth.user?.tenant_id);
   const isAdmin = useAppSelector((s) => s.auth.user?.role === "admin");
+  const userId = useAppSelector((s) => s.auth.user?.id);
 
   // Depends on "is logged in", the tenant and the admin flag, NOT the token itself,
   // so the socket stays open across the 15-minute token refreshes.
   useEffect(() => {
-    if (!authed || !tenantId) return;
+    if (!authed || !tenantId || !userId) return;
 
     const echo = connectEcho({
       getToken: () => store.getState().auth.token,
@@ -55,7 +56,12 @@ export function useRealtime() {
         // Events may have been missed while offline: refetch everything on screen
         if (wasConnected) {
           dispatch(
-            baseApi.util.invalidateTags(["Task", "Project", "Stats", "AuditLog"]),
+            baseApi.util.invalidateTags([
+              "Task",
+              "Project",
+              "Stats",
+              "AuditLog",
+            ]),
           );
         }
         wasConnected = true;
@@ -92,17 +98,23 @@ export function useRealtime() {
 
     if (isAdmin) {
       echo.private(adminChannel).listen(".audit.logged", () => {
-        dispatch(baseApi.util.invalidateTags(["AuditLog"])); // refetches only if the audit page is open
+        dispatch(baseApi.util.invalidateTags(["AuditLog"]));
       });
     }
+
+    const userChannel = `user.${userId}`;
+    echo.private(userChannel).listen(".notification.created", () => {
+      dispatch(baseApi.util.invalidateTags(["Notification"]));
+    });
 
     return () => {
       timers.forEach(clearTimeout);
       connection.unbind("state_change", onStateChange);
       echo.leave(channelName);
       if (isAdmin) echo.leave(adminChannel);
+      echo.leave(userChannel);
       disconnectEcho();
       dispatch(setRealtimeStatus("idle"));
     };
-  }, [authed, tenantId, isAdmin, dispatch, store]);
+  }, [authed, tenantId, userId, isAdmin, dispatch, store]);
 }

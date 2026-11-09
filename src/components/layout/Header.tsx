@@ -3,6 +3,7 @@ import { openSidebar } from '../../store/theme/uiSlice';
 import ThemeToggle from '../ThemeToggle';
 import { Icon } from './Icons';
 import UserMenu from './UserMenu';
+import NotificationBell from './NotificationBell';
 
 export default function Header() {
   const dispatch = useAppDispatch();
@@ -22,6 +23,7 @@ export default function Header() {
       <div className="hidden lg:block" />
 
       <div className="flex items-center gap-3">
+        <NotificationBell />
         <ThemeToggle />
         <UserMenu />
       </div>
