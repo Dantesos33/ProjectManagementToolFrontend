@@ -76,6 +76,8 @@ export default function AuditLogPage() {
           <option value="">All items</option>
           <option value="task">Tasks</option>
           <option value="project">Projects</option>
+          <option value="user">Members</option>
+          <option value="invitation">Invitations</option>
         </SelectField>
         <SelectField label="Action" name="event" value={filters.event} onChange={(e) => setFilter('event', e.target.value)}>
           <option value="">All actions</option>

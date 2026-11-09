@@ -13,6 +13,8 @@ import { useAppTheme } from "./hooks/index";
 import AuthBootstrap from "./store/auth/AuthBootstrap";
 import Dashboard from "./pages/Dashboard";
 import Placeholder from "./pages/Placeholder";
+import AcceptInvitePage from './pages/auth/AcceptInvitePage';
+import TeamPage from './pages/team/TeamPage';
 
 export default function App() {
   useAppTheme();
@@ -32,15 +34,7 @@ export default function App() {
             <Route path="/projects/:id" element={<ProjectBoardPage />} />
 
             <Route element={<RoleRoute allow={["admin"]} />}>
-              <Route
-                path="/admin/users"
-                element={
-                  <Placeholder
-                    title="Team"
-                    description="Invite members and manage roles."
-                  />
-                }
-              />
+              <Route path="/admin/users" element={<TeamPage />} />
               <Route path="/admin/audit" element={<AuditLogPage />} />
             </Route>
 
@@ -66,6 +60,8 @@ export default function App() {
             />
           </Route>
         </Route>
+
+        <Route path="/accept-invite" element={<AcceptInvitePage />} />
       </Routes>
     </AuthBootstrap>
   );

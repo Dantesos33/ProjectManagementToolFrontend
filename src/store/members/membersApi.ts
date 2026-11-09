@@ -6,6 +6,7 @@ export const membersApi = baseApi.injectEndpoints({
     getMembers: build.query<Member[], void>({
       query: () => '/members',
       transformResponse: (res: { data: Member[] }) => res.data,
+      providesTags: ['User'],
     }),
   }),
 });

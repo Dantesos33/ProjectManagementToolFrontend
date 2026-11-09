@@ -86,3 +86,29 @@ export interface AuditLog {
   user: { id: number; name: string } | null;   // null if the user was deleted
   created_at: string;
 }
+
+export interface TeamMember {
+  id: number;
+  name: string;
+  email: string;
+  role: Role;
+  created_at: string;
+}
+
+export interface Invitation {
+  id: number;
+  email: string;
+  role: Role;
+  expired: boolean;
+  expires_at: string;
+  created_at: string;
+  invited_by: { id: number; name: string } | null;
+  link?: string;   // only present in local development
+}
+
+export interface InvitationPreview {
+  email: string;
+  role: Role;
+  company: string;
+  expires_at: string;
+}
